@@ -1,0 +1,12 @@
+C:\PersonalFinanceTracker\bin\Debug\PersonalFinanceTracker.exe.config
+C:\PersonalFinanceTracker\bin\Debug\PersonalFinanceTracker.exe
+C:\PersonalFinanceTracker\bin\Debug\PersonalFinanceTracker.pdb
+C:\PersonalFinanceTracker\bin\Debug\System.Data.SQLite.dll
+C:\PersonalFinanceTracker\bin\Debug\System.Data.SQLite.xml
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.csproj.AssemblyReference.cache
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.Properties.Resources.resources
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.csproj.GenerateResource.cache
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.csproj.CoreCompileInputs.cache
+C:\PersonalFinanceTracker\obj\Debug\Personal.50996CEA.Up2Date
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.exe
+C:\PersonalFinanceTracker\obj\Debug\PersonalFinanceTracker.pdb
