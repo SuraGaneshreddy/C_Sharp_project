@@ -28,18 +28,26 @@ namespace PersonalFinanceTracker.Data
                 string transactionTable =
                 @"CREATE TABLE IF NOT EXISTS Transactions(
                     TransactionId INTEGER PRIMARY KEY AUTOINCREMENT,
-                    UserId INTEGER,
+                    Title TEXT,
                     Amount REAL,
-                    Type TEXT,
                     Category TEXT,
-                    Date TEXT,
-                    Description TEXT
+                    Type TEXT,
+                    Date TEXT
+                );";
+
+                string categoryTable =
+                @"CREATE TABLE IF NOT EXISTS Categories(
+                CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
+                Name TEXT
                 );";
 
                 SQLiteCommand cmd = new SQLiteCommand(userTable, conn);
                 cmd.ExecuteNonQuery();
 
                 cmd = new SQLiteCommand(transactionTable, conn);
+                cmd.ExecuteNonQuery();
+
+                cmd = new SQLiteCommand(categoryTable, conn);
                 cmd.ExecuteNonQuery();
             }
         }

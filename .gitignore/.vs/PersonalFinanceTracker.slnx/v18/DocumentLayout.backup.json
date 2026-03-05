@@ -1,12 +1,87 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\PersonalFinanceTracker\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|C:\\PersonalFinanceTracker\\forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|solutionrelative:forms\\dashboardform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|C:\\PersonalFinanceTracker\\forms\\addexpenseform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|solutionrelative:forms\\addexpenseform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|c:\\personalfinancetracker\\data\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|solutionrelative:data\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|C:\\PersonalFinanceTracker\\forms\\addexpenseform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{FD8E9824-6E50-4BD2-B322-1CA41347AF8D}|PersonalFinanceTracker.csproj|solutionrelative:forms\\addexpenseform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AddExpenseForm.cs",
+              "DocumentMoniker": "C:\\PersonalFinanceTracker\\Forms\\AddExpenseForm.cs",
+              "RelativeDocumentMoniker": "Forms\\AddExpenseForm.cs",
+              "ToolTip": "C:\\PersonalFinanceTracker\\Forms\\AddExpenseForm.cs",
+              "RelativeToolTip": "Forms\\AddExpenseForm.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T09:17:23.5Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AddExpenseForm.cs [Design]",
+              "DocumentMoniker": "C:\\PersonalFinanceTracker\\Forms\\AddExpenseForm.cs",
+              "RelativeDocumentMoniker": "Forms\\AddExpenseForm.cs",
+              "ToolTip": "C:\\PersonalFinanceTracker\\Forms\\AddExpenseForm.cs [Design]",
+              "RelativeToolTip": "Forms\\AddExpenseForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T09:17:18.404Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DatabaseHelper.cs",
+              "DocumentMoniker": "C:\\PersonalFinanceTracker\\Data\\DatabaseHelper.cs",
+              "RelativeDocumentMoniker": "Data\\DatabaseHelper.cs",
+              "ToolTip": "C:\\PersonalFinanceTracker\\Data\\DatabaseHelper.cs",
+              "RelativeToolTip": "Data\\DatabaseHelper.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAADIAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T08:45:34.241Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DashboardForm.cs",
+              "DocumentMoniker": "C:\\PersonalFinanceTracker\\Forms\\DashboardForm.cs",
+              "RelativeDocumentMoniker": "Forms\\DashboardForm.cs",
+              "ToolTip": "C:\\PersonalFinanceTracker\\Forms\\DashboardForm.cs",
+              "RelativeToolTip": "Forms\\DashboardForm.cs",
+              "ViewState": "AgIAALQAAAAAAAAAAADwv8MAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T08:25:57.968Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
