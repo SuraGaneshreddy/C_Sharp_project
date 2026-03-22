@@ -37,11 +37,13 @@ namespace PersonalFinanceTracker.Data
 
                 string categoryTable =
                 @"CREATE TABLE IF NOT EXISTS Categories(
-                CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name TEXT
+                    CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT
                 );";
 
-                SQLiteCommand cmd = new SQLiteCommand(userTable, conn);
+                SQLiteCommand cmd;
+
+                cmd = new SQLiteCommand(userTable, conn);
                 cmd.ExecuteNonQuery();
 
                 cmd = new SQLiteCommand(transactionTable, conn);

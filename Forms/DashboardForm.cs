@@ -1,225 +1,296 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Data.SQLite;
+using System.Drawing;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using PersonalFinanceTracker.Data;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
 using Microsoft.VisualBasic;
 
 namespace PersonalFinanceTracker.Forms
 {
-    public partial class DashboardForm : Form
+    public class DashboardForm : Form
     {
-        Label lblIncome;
-        Label lblExpense;
-        Label lblBalance;
-        Chart financeChart;
+        Label lblIncome, lblExpense, lblBalance;
 
         public DashboardForm()
         {
-            InitializeComponent();
             BuildUI();
+
             LoadSummary();
-            LoadMonthlyChart();
-            LoadPieChart();
+            LoadSummaryChart();
+            LoadCategoryChart();
+            LoadTransactions();
         }
 
         private void BuildUI()
         {
             this.Text = "Finance Dashboard";
-            this.Size = new Size(900, 600);
+            this.Size = new Size(1000, 550);
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            // Title
             Label title = new Label()
             {
                 Text = "Finance Overview",
-                Font = new Font("Segoe UI", 18, FontStyle.Bold),
-                Location = new Point(30, 20),
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                Location = new Point(20, 20),
                 AutoSize = true
             };
+            this.Controls.Add(title);
 
-            lblIncome = new Label()
-            {
-                Text = "Income: 0",
-                Font = new Font("Segoe UI", 12),
-                Location = new Point(30, 80),
-                AutoSize = true
-            };
-
-            lblExpense = new Label()
-            {
-                Text = "Expense: 0",
-                Font = new Font("Segoe UI", 12),
-                Location = new Point(30, 120),
-                AutoSize = true
-            };
-
+            // Summary Labels
+            lblIncome = new Label() { Location = new Point(20, 80), AutoSize = true };
+            lblExpense = new Label() { Location = new Point(20, 110), AutoSize = true };
             lblBalance = new Label()
             {
-                Text = "Balance: 0",
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                Location = new Point(30, 160),
-                AutoSize = true
+                Location = new Point(20, 140),
+                AutoSize = true,
+                Font = new Font("Arial", 10, FontStyle.Bold)
             };
 
-            financeChart = new Chart();
-            financeChart.Location = new Point(300, 80);
-            financeChart.Size = new Size(500, 350);
-
-            ChartArea area = new ChartArea();
-            financeChart.ChartAreas.Add(area);
-
-            Series series = new Series();
-            series.ChartType = SeriesChartType.Pie;
-
-            financeChart.Series.Add(series);
-
-            this.Controls.Add(title);
             this.Controls.Add(lblIncome);
             this.Controls.Add(lblExpense);
             this.Controls.Add(lblBalance);
-            this.Controls.Add(financeChart);
 
-            Button btnAddExpense = new Button()
+            // Buttons
+            Button btnAdd = new Button()
             {
                 Text = "Add Transaction",
-                Location = new Point(30, 220),
+                Location = new Point(20, 200),
                 Width = 150
             };
-
-            btnAddExpense.Click += OpenAddExpense;
-
-            this.Controls.Add(btnAddExpense);
+            btnAdd.Click += OpenAddExpense;
 
             Button btnCategory = new Button()
             {
                 Text = "New Category",
-                Location = new Point(30, 250),
+                Location = new Point(20, 240),
+                Width = 150
+            };
+            btnCategory.Click += OpenCategory;
+
+            Button btnExport = new Button()
+            {
+                Text = "Export Report",
+                Location = new Point(20, 280),
                 Width = 150
             };
 
-            btnCategory.Click += OpenCategory;
-
+            this.Controls.Add(btnAdd);
             this.Controls.Add(btnCategory);
-
-
-            Button btnExport = new Button();
-            btnExport.Text = "Export Report";
-            btnExport.Location = new Point(30, 300);
-            btnExport.Width = 150;
-
-            btnExport.Click += ExportPDF;
-
             this.Controls.Add(btnExport);
+
+            // -------- Chart 1 (Income vs Expense) --------
+            Chart chartSummary = new Chart();
+            chartSummary.Name = "chartSummary";
+            chartSummary.Size = new Size(300, 250);
+            chartSummary.Location = new Point(250, 50);
+
+            chartSummary.ChartAreas.Add(new ChartArea());
+            Series s1 = new Series();
+            s1.ChartType = SeriesChartType.Pie;
+            chartSummary.Series.Add(s1);
+
+            this.Controls.Add(chartSummary);
+
+            // -------- Chart 2 (Category) --------
+            Chart chartCategory = new Chart();
+            chartCategory.Name = "chartCategory";
+            chartCategory.Size = new Size(300, 250);
+            chartCategory.Location = new Point(600, 50);
+
+            chartCategory.ChartAreas.Add(new ChartArea());
+            Series s2 = new Series();
+            s2.ChartType = SeriesChartType.Pie;
+            chartCategory.Series.Add(s2);
+
+            this.Controls.Add(chartCategory);
+
+            // -------- DataGrid --------
+            DataGridView grid = new DataGridView();
+            grid.Name = "gridTransactions";
+            grid.Location = new Point(20, 320);
+            grid.Size = new Size(940, 180);
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            grid.CellClick += Grid_CellClick;
+
+            this.Controls.Add(grid);
         }
+
+        // ================= SUMMARY =================
 
         private void LoadSummary()
         {
-            double income = 0;
-            double expense = 0;
-
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
-                string incomeQuery =
-                "SELECT IFNULL(SUM(Amount),0) FROM Transactions WHERE Type='Income'";
+                double income = 0;
+                double expense = 0;
 
-                string expenseQuery =
-                "SELECT IFNULL(SUM(Amount),0) FROM Transactions WHERE Type='Expense'";
+                SQLiteCommand cmd;
 
-                SQLiteCommand cmdIncome =
-                    new SQLiteCommand(incomeQuery, conn);
+                cmd = new SQLiteCommand(
+                    "SELECT IFNULL(SUM(Amount),0) FROM Transactions WHERE Type='Income'", conn);
+                income = Convert.ToDouble(cmd.ExecuteScalar());
 
-                SQLiteCommand cmdExpense =
-                    new SQLiteCommand(expenseQuery, conn);
+                cmd = new SQLiteCommand(
+                    "SELECT IFNULL(SUM(Amount),0) FROM Transactions WHERE Type='Expense'", conn);
+                expense = Convert.ToDouble(cmd.ExecuteScalar());
 
-                income = Convert.ToDouble(cmdIncome.ExecuteScalar());
-                expense = Convert.ToDouble(cmdExpense.ExecuteScalar());
+                lblIncome.Text = "Income: " + income;
+                lblExpense.Text = "Expense: " + expense;
+                lblBalance.Text = "Balance: " + (income - expense);
             }
-
-            double balance = income - expense;
-
-            lblIncome.Text = "Income: " + income;
-            lblExpense.Text = "Expense: " + expense;
-            lblBalance.Text = "Balance: " + balance;
-
-            financeChart.Series[0].Points.Clear();
-            financeChart.Series[0].Points.AddXY("Income", income);
-            financeChart.Series[0].Points.AddXY("Expense", expense);
         }
-        private void LoadMonthlyChart()
+
+        // ================= CHART 1 =================
+
+        private void LoadSummaryChart()
         {
-            financeChart.Series[0].Points.Clear();
+            Chart chart = (Chart)this.Controls.Find("chartSummary", true)[0];
+            chart.Series[0].Points.Clear();
 
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
                 string query =
-                @"SELECT strftime('%m',Date) as Month,
-          SUM(Amount)
-          FROM Transactions
-          WHERE Type='Expense'
-          GROUP BY Month";
+                @"SELECT Type, SUM(Amount)
+                  FROM Transactions
+                  GROUP BY Type";
 
                 SQLiteCommand cmd = new SQLiteCommand(query, conn);
                 SQLiteDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    financeChart.Series[0].Points.AddXY(
-                        reader["Month"].ToString(),
+                    chart.Series[0].Points.AddXY(
+                        reader["Type"].ToString(),
                         Convert.ToDouble(reader[1])
                     );
                 }
             }
+
+            chart.Series[0].IsValueShownAsLabel = true;
         }
+
+        // ================= CHART 2 =================
+
+        private void LoadCategoryChart()
+        {
+            Chart chart = (Chart)this.Controls.Find("chartCategory", true)[0];
+            chart.Series[0].Points.Clear();
+
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string query =
+                @"SELECT Category, SUM(Amount)
+                  FROM Transactions
+                  WHERE Type='Expense'
+                  GROUP BY Category";
+
+                SQLiteCommand cmd = new SQLiteCommand(query, conn);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    chart.Series[0].Points.AddXY(
+                        reader["Category"].ToString(),
+                        Convert.ToDouble(reader[1])
+                    );
+                }
+            }
+
+            chart.Series[0].IsValueShownAsLabel = true;
+        }
+
+        // ================= TABLE =================
+
+        private void LoadTransactions()
+        {
+            DataGridView grid =
+            (DataGridView)this.Controls.Find("gridTransactions", true)[0];
+
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string query =
+                "SELECT TransactionId, Date, Title, Category, Amount, Type FROM Transactions";
+
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(query, conn);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
+                grid.DataSource = dt;
+            }
+
+            // Add Delete button once
+            if (!grid.Columns.Contains("Delete"))
+            {
+                DataGridViewButtonColumn btnDelete = new DataGridViewButtonColumn();
+                btnDelete.Name = "Delete";
+                btnDelete.Text = "Delete";
+                btnDelete.UseColumnTextForButtonValue = true;
+
+                grid.Columns.Add(btnDelete);
+            }
+        }
+
+        // ================= DELETE =================
+
+        private void Grid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView grid = (DataGridView)sender;
+
+            if (e.RowIndex >= 0 && grid.Columns[e.ColumnIndex].Name == "Delete")
+            {
+                int id = Convert.ToInt32(
+                    grid.Rows[e.RowIndex].Cells["TransactionId"].Value);
+
+                using (var conn = DatabaseHelper.GetConnection())
+                {
+                    conn.Open();
+
+                    string query =
+                    "DELETE FROM Transactions WHERE TransactionId=@id";
+
+                    SQLiteCommand cmd = new SQLiteCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Refresh everything
+                LoadTransactions();
+                LoadSummary();
+                LoadSummaryChart();
+                LoadCategoryChart();
+            }
+        }
+
+        // ================= BUTTONS =================
 
         private void OpenAddExpense(object sender, EventArgs e)
         {
             AddExpenseForm form = new AddExpenseForm();
             form.ShowDialog();
 
-            // refresh dashboard
+            LoadTransactions();
             LoadSummary();
-            LoadMonthlyChart();
-            LoadPieChart();
+            LoadSummaryChart();
+            LoadCategoryChart();
         }
-        private void ExportPDF(object sender, EventArgs e)
-        {
-            string path = "FinanceReport.pdf";
 
-            PdfWriter writer = new PdfWriter(path);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
-
-            document.Add(new Paragraph("Personal Finance Report"));
-            document.Add(new Paragraph(lblIncome.Text));
-            document.Add(new Paragraph(lblExpense.Text));
-            document.Add(new Paragraph(lblBalance.Text));
-
-            document.Close();
-
-            MessageBox.Show("Report exported successfully!");
-        }
         private void OpenCategory(object sender, EventArgs e)
         {
-            string name =
-            Microsoft.VisualBasic.Interaction.InputBox(
-                "Enter new category",
-                "Add Category",
-                ""
-            );
+            string name = Interaction.InputBox(
+                "Enter category", "New Category", "");
 
             if (name == "") return;
 
@@ -236,33 +307,7 @@ namespace PersonalFinanceTracker.Forms
                 cmd.ExecuteNonQuery();
             }
 
-            MessageBox.Show("Category added successfully");
-        }
-        private void LoadPieChart()
-        {
-            financeChart.Series[0].Points.Clear();
-
-            using (var conn = DatabaseHelper.GetConnection())
-            {
-                conn.Open();
-
-                string query =
-                @"SELECT Category, SUM(Amount)
-          FROM Transactions
-          WHERE Type='Expense'
-          GROUP BY Category";
-
-                SQLiteCommand cmd = new SQLiteCommand(query, conn);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    financeChart.Series[0].Points.AddXY(
-                        reader["Category"].ToString(),
-                        Convert.ToDouble(reader[1])
-                    );
-                }
-            }
+            MessageBox.Show("Category added!");
         }
     }
 }

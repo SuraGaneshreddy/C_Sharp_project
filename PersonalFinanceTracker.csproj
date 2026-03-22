@@ -155,9 +155,6 @@
     <Compile Include="Forms\DashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DashboardForm.Designer.cs">
-      <DependentUpon>DashboardForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
