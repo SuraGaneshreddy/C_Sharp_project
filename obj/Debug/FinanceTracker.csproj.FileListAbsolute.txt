@@ -1,0 +1,8 @@
+C:\Users\evilg\FinanceTracker\FinanceTracker\obj\Debug\FinanceTracker.csproj.AssemblyReference.cache
+C:\Users\evilg\FinanceTracker\FinanceTracker\obj\Debug\FinanceTracker.csproj.CoreCompileInputs.cache
+C:\Users\evilg\FinanceTracker\FinanceTracker\bin\Debug\FinanceTracker.exe
+C:\Users\evilg\FinanceTracker\FinanceTracker\bin\Debug\FinanceTracker.pdb
+C:\Users\evilg\FinanceTracker\FinanceTracker\obj\Debug\FinanceT.7E14CD64.Up2Date
+C:\Users\evilg\FinanceTracker\FinanceTracker\obj\Debug\FinanceTracker.exe
+C:\Users\evilg\FinanceTracker\FinanceTracker\obj\Debug\FinanceTracker.pdb
+C:\Users\evilg\FinanceTracker\FinanceTracker\bin\Debug\System.Data.SQLite.xml
